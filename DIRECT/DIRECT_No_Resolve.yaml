@@ -1,0 +1,11 @@
+payload:
+  # DNS
+  - DOMAIN-SUFFIX,alidns.com
+  - DOMAIN-SUFFIX,doh.pub
+  - DOMAIN-SUFFIX,dot.pub
+  # 自定义
+  - DOMAIN-SUFFIX,ssln.eu.org
+  - DOMAIN-SUFFIX,alienven.eu.org
+  # 飞牛
+  - DOMAIN-SUFFIX,fnnas.com
+  - DOMAIN-SUFFIX,5ddd.com
