@@ -36,7 +36,7 @@ tun:
   enable: false
   stack: system # gvisor/mixed
   dns-hijack:
-    - any:53
+  - any:53
 
 # 嗅探域名 可选配置redir-host模式开启
 sniffer:
@@ -44,21 +44,24 @@ sniffer:
   force-dns-mapping: true ## 对 redir-host 类型识别的流量进行强制嗅探
   parse-pure-ip: true ## 对所有未获取到域名的流量进行强制嗅探
   override-destination: true ## 是否使用嗅探结果作为实际访问，默认 true
-  sniff: # TLS 和 QUIC 默认如果不配置 ports 默认嗅探 443
+  sniff:
+    # TLS 和 QUIC 默认如果不配置 ports 默认嗅探 443
     QUIC:
     TLS:
-    HTTP: # 默认嗅探 80
-  # force-domain:
-  #   - +.v2ex.com
-  # skip-src-address: # 对于来源ip跳过嗅探
-  #   - 192.168.0.0/16
-  skip-dst-address: # 对于目标ip跳过嗅探
-    - 192.168.0.0/16
+    HTTP:
+      # 默认嗅探 80
+      # force-domain:
+      #   - +.v2ex.com
+      # skip-src-address: # 对于来源ip跳过嗅探
+      #   - 192.168.0.0/16
+  skip-dst-address:
+  # 对于目标ip跳过嗅探
+  - 192.168.0.0/16
   ## 对嗅探结果进行跳过
   skip-domain:
-    - Mijia Cloud
-    - dlg.io.mi.com
-    - geosite:private
+  - Mijia Cloud
+  - dlg.io.mi.com
+  - geosite:private
 
 #hosts:
 # '*.mihomo.dev': 127.0.0.1
@@ -79,10 +82,22 @@ dns:
   # 可设置为whitelist，即只有匹配成功才返回fake-ip
   fake-ip-filter-mode: whitelist
   fake-ip-filter:
-    # fakeip-filter 为 rule-providers 中的名为 fakeip-filter 规则订阅，
-    # 且 behavior 必须为 domain/classical，当为 classical 时仅会生效域名类规则
-    - rule-set:ProxyLite
-
+  # fakeip-filter 为 rule-providers 中的名为 fakeip-filter 规则订阅，
+  # 且 behavior 必须为 domain/classical，当为 classical 时仅会生效域名类规则
+  - rule-set:CustomProxy
+  - rule-set:GitHub
+  - rule-set:Copilot
+  - rule-set:Microsoft
+  - rule-set:GoogleFCM
+  - rule-set:Google
+  - geosite:pixiv
+  - geosite:telegram
+  - geosite:category-container
+  - geosite:category-ai-!cn
+  - geosite:category-social-media-!cn
+  - geosite:category-porn
+  - rule-set:GlobalMedia
+  - rule-set:ProxyLite
   # use-hosts: true # 查询 hosts
 
   # 配置后面的nameserver、fallback和nameserver-policy向dns服务器的连接过程是否遵守遵守rules规则
@@ -94,30 +109,30 @@ dns:
 
   # 用于解析 DNS 服务器 的域名
   default-nameserver:
-    - 127.0.0.1:6053
+  - 127.0.0.1:6053
   # 默认的域名解析服务器
   nameserver:
-    - 127.0.0.1:6053
+  - 127.0.0.1:6053
   # 仅用于解析代理节点的域名
   proxy-server-nameserver:
-    - 127.0.0.1:6053
+  - 127.0.0.1:6053
 
 # 节点
 proxies:
-  - name: "US-Reality"
-    type: vless
-    server: ""
-    port: 443
-    uuid: ""
-    network: tcp
-    tls: true
-    udp: true
-    flow: xtls-rprx-vision
-    servername: ""
-    reality-opts:
-      public-key: ""
-      short-id: ""
-    client-fingerprint: chrome
+- name: US-Reality
+  type: vless
+  server: ""
+  port: 443
+  uuid: ""
+  network: tcp
+  tls: true
+  udp: true
+  flow: xtls-rprx-vision
+  servername: ""
+  reality-opts:
+    public-key: ""
+    short-id: ""
+  client-fingerprint: chrome
 
 FilterHK: &FilterHK "^(?=.*(香港|HK|Hong|🇭🇰))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
 FilterJP: &FilterJP "^(?=.*(日本|JP|Japan|🇯🇵))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
@@ -132,7 +147,7 @@ FilterAll: &FilterAll '^(?=.*(.))(?!(.*((?i)机场|每月|剩余|订阅|(\b(TOTA
 
 AutoProviders: &AutoProviders
   type: url-test
-  url: "https://www.gstatic.com/generate_204"
+  url: https://www.gstatic.com/generate_204
   interval: 60
   tolerance: 200
   lazy: true
@@ -146,50 +161,58 @@ SelectProxies: &SelectProxies
 
 # 代理组
 proxy-groups:
-  - name: HK-自动选择
-    <<: *AutoProviders
-    filter: *FilterHK
-  - name: US-自动选择
-    <<: *AutoProviders
-    filter: *FilterUS
-  - name: JP-自动选择
-    <<: *AutoProviders
-    filter: *FilterJP
-  - name: SG-自动选择
-    <<: *AutoProviders
-    filter: *FilterSG
-  - name: AI
-    <<: *SelectProxies
-    proxies:
-      - DIRECT
-      - HK-自动选择
-      - US-自动选择
-      - JP-自动选择
-      - SG-自动选择
-  - name: 测速
-    <<: *SelectProxies
-    proxies:
-      - DIRECT
-      - HK-自动选择
-      - US-自动选择
-      - JP-自动选择
-      - SG-自动选择
-  - name: 流媒体
-    <<: *SelectProxies
-    proxies:
-      - DIRECT
-      - HK-自动选择
-      - US-自动选择
-      - JP-自动选择
-      - SG-自动选择
-  - name: PROXY
-    <<: *SelectProxies
-    proxies:
-      - DIRECT
-      - HK-自动选择
-      - US-自动选择
-      - JP-自动选择
-      - SG-自动选择
+- name: HK-自动选择
+  <<: *AutoProviders
+  filter: *FilterHK
+- name: US-自动选择
+  <<: *AutoProviders
+  filter: *FilterUS
+- name: JP-自动选择
+  <<: *AutoProviders
+  filter: *FilterJP
+- name: SG-自动选择
+  <<: *AutoProviders
+  filter: *FilterSG
+- name: AI
+  <<: *SelectProxies
+  proxies:
+  - DIRECT
+  - HK-自动选择
+  - US-自动选择
+  - JP-自动选择
+  - SG-自动选择
+- name: 测速
+  <<: *SelectProxies
+  proxies:
+  - DIRECT
+  - HK-自动选择
+  - US-自动选择
+  - JP-自动选择
+  - SG-自动选择
+- name: 流媒体
+  <<: *SelectProxies
+  proxies:
+  - DIRECT
+  - HK-自动选择
+  - US-自动选择
+  - JP-自动选择
+  - SG-自动选择
+- name: 游戏平台
+  <<: *SelectProxies
+  proxies:
+  - DIRECT
+  - HK-自动选择
+  - US-自动选择
+  - JP-自动选择
+  - SG-自动选择
+- name: PROXY
+  <<: *SelectProxies
+  proxies:
+  - DIRECT
+  - HK-自动选择
+  - US-自动选择
+  - JP-自动选择
+  - SG-自动选择
 
 # 订阅配置
 NodeParam: &NodeParam
@@ -251,23 +274,11 @@ rule-providers:
   Speedtest:
     <<: *RuleSet_domain_text
     url: https://ruleset.skk.moe/Clash/domainset/speedtest.txt
-  Ai:
-    <<: *RuleSet_classical_text
-    url: https://ruleset.skk.moe/Clash/non_ip/ai.txt
-  MicrosoftCdn:
-    <<: *RuleSet_classical_text
-    url: https://ruleset.skk.moe/Clash/non_ip/microsoft_cdn.txt
 
   ## https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash
   Download:
     <<: *RuleSet_classical_yaml
     url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Download/Download_No_Resolve.yaml
-  Game:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Game/Game_No_Resolve.yaml
-  TikTok:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/TikTok/TikTok_No_Resolve.yaml
   XiaoMi:
     <<: *RuleSet_classical_yaml
     url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/XiaoMi/XiaoMi_No_Resolve.yaml
@@ -286,27 +297,15 @@ rule-providers:
   WeChat:
     <<: *RuleSet_classical_yaml
     url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/WeChat/WeChat_No_Resolve.yaml
-  Weibo:
+  Copilot:
     <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Weibo/Weibo_No_Resolve.yaml
-  ChinaMedia:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/ChinaMedia/ChinaMedia_No_Resolve.yaml
-  GlobalMedia:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GlobalMedia/GlobalMedia_Classical_No_Resolve.yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Copilot/Copilot_No_Resolve.yaml
   Google:
     <<: *RuleSet_classical_yaml
     url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Google/Google_No_Resolve.yaml
   GoogleFCM:
     <<: *RuleSet_classical_yaml
     url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GoogleFCM/GoogleFCM_No_Resolve.yaml
-  Global:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Global/Global_Classical_No_Resolve.yaml
-  ProxyLite:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/ProxyLite/ProxyLite_No_Resolve.yaml
   GitHub:
     <<: *RuleSet_classical_yaml
     url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GitHub/GitHub_No_Resolve.yaml
@@ -316,6 +315,18 @@ rule-providers:
   Microsoft:
     <<: *RuleSet_classical_yaml
     url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Microsoft/Microsoft_No_Resolve.yaml
+  ChinaMedia:
+    <<: *RuleSet_classical_yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/ChinaMedia/ChinaMedia_No_Resolve.yaml
+  GlobalMedia:
+    <<: *RuleSet_classical_yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GlobalMedia/GlobalMedia_Classical_No_Resolve.yaml
+  ProxyLite:
+    <<: *RuleSet_classical_yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/ProxyLite/ProxyLite_No_Resolve.yaml
+  Global:
+    <<: *RuleSet_classical_yaml
+    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Global/Global_Classical_No_Resolve.yaml
 
   ## 自定义规则
   CustomDirect:
@@ -326,62 +337,52 @@ rule-providers:
     url: https://cdn.jsdelivr.net/gh/alienven/clash-rules@main/PROXY/PROXY_No_Resolve.yaml
 
 rules:
-  - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT
-  - RULE-SET,CustomDirect,DIRECT
-  - RULE-SET,CustomProxy,PROXY
-
-  - GEOSITE,private,DIRECT
-  - GEOIP,private,DIRECT,no-resolve
-
-  - GEOSITE,category-ntp-cn,DIRECT
-  - RULE-SET,Download,DIRECT
-  - GEOSITE,jsdelivr,DIRECT
-  - GEOSITE,tracker,DIRECT
-  - RULE-SET,XiaoMi,DIRECT
-  - RULE-SET,OPPO,DIRECT
-  - RULE-SET,OnePlus,DIRECT
-  - RULE-SET,Vivo,DIRECT
-  - RULE-SET,Tencent,DIRECT
-  - RULE-SET,WeChat,DIRECT
-  - RULE-SET,Weibo,DIRECT
-  - GEOSITE,category-ai-cn,DIRECT
-  - GEOSITE,category-netdisk-cn,DIRECT
-  - RULE-SET,ChinaMedia,DIRECT
-
-  - GEOSITE,category-container,PROXY
-  - RULE-SET,GitHub,PROXY
-  - GEOSITE,telegram,PROXY
-  - GEOIP,telegram,PROXY,no-resolve
-
-  - RULE-SET,Bing,DIRECT
-  - GEOSITE,onedrive,DIRECT
-  - GEOSITE,microsoft@cn,DIRECT
-  - RULE-SET,Microsoft,PROXY
-
-  - GEOSITE,google@cn,DIRECT
-  - RULE-SET,GoogleFCM,PROXY
-  - RULE-SET,Google,PROXY
-  - GEOSITE,youtube,流媒体
-  - GEOSITE,twitter,PROXY
-  - GEOSITE,pixiv,PROXY
-  - GEOSITE,apple@cn,DIRECT
-  - RULE-SET,GlobalMedia,流媒体
-
-  - RULE-SET,Ai,AI
-  - RULE-SET,Speedtest,测速
-  - RULE-SET,TikTok,PROXY
-
-  - GEOSITE,tld-cn,DIRECT
-  - GEOSITE,steam@cn,DIRECT
-  - GEOSITE,category-games@cn,DIRECT
-  - GEOSITE,category-games,游戏平台
-  - RULE-SET,Game,游戏平台
-
-  - GEOSITE,cn,DIRECT
-  - GEOIP,cn,DIRECT,no-resolve
-
-  - GEOSITE,category-porn,PROXY
-  - RULE-SET,Global,PROXY
-  - NETWORK,udp,DIRECT
-
-  - MATCH,PROXY
+- AND,((NETWORK,UDP),(DST-PORT,443)),REJECT
+- NETWORK,udp,DIRECT
+- GEOSITE,category-httpdns-cn,REJECT
+- RULE-SET,CustomDirect,DIRECT
+- RULE-SET,CustomProxy,PROXY
+- GEOSITE,private,DIRECT
+- GEOIP,private,DIRECT,no-resolve
+- GEOSITE,category-ntp-cn,DIRECT
+- RULE-SET,Download,DIRECT
+- GEOSITE,jsdelivr,DIRECT
+- GEOSITE,tracker,DIRECT
+- RULE-SET,XiaoMi,DIRECT
+- RULE-SET,OPPO,DIRECT
+- RULE-SET,OnePlus,DIRECT
+- RULE-SET,Vivo,DIRECT
+- RULE-SET,WeChat,DIRECT
+- RULE-SET,Tencent,DIRECT
+- GEOSITE,apple@cn,DIRECT
+- GEOSITE,category-social-media-cn,DIRECT
+- GEOSITE,category-ai-cn,DIRECT
+- GEOSITE,category-ai-!cn,AI
+- GEOSITE,category-netdisk-cn,DIRECT
+- RULE-SET,ChinaMedia,DIRECT
+- GEOSITE,category-container,PROXY
+- RULE-SET,GitHub,PROXY
+- RULE-SET,Bing,DIRECT
+- GEOSITE,onedrive,DIRECT
+- GEOSITE,microsoft@cn,DIRECT
+- RULE-SET,Copilot,PROXY
+- RULE-SET,Microsoft,PROXY
+- GEOSITE,pixiv,PROXY
+- GEOSITE,telegram,PROXY
+- GEOIP,telegram,PROXY,no-resolve
+- GEOSITE,category-porn,流媒体
+- RULE-SET,GlobalMedia,流媒体
+- GEOSITE,google@cn,DIRECT
+- RULE-SET,GoogleFCM,PROXY
+- RULE-SET,Google,PROXY
+- GEOIP,google,PROXY,no-resolve
+- GEOSITE,category-social-media-!cn,PROXY
+- RULE-SET,Speedtest,测速
+- GEOSITE,category-game-accelerator-cn,DIRECT
+- GEOSITE,tld-cn,DIRECT
+- GEOSITE,steam@cn,DIRECT
+- GEOSITE,category-games@cn,DIRECT
+- GEOSITE,category-games,游戏平台
+- GEOSITE,cn,DIRECT
+- GEOIP,cn,DIRECT,no-resolve
+- MATCH,PROXY
