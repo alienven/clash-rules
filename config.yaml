@@ -15,7 +15,7 @@ find-process-mode: off
 profile:
   store-selected: true # 存储 select 选择记录
   store-fake-ip: true # 持久化 fake-ip
-global-client-fingerprint: chrome # "chrome","firefox","safari","ios","random","none" options.
+global-client-fingerprint: chrome # chrome,firefox,safari,ios,random,none options.
 global-ua: clash.meta
 #  TCP keep alive interval
 # disable-keep-alive: false #目前在android端强制为true
@@ -23,10 +23,10 @@ global-ua: clash.meta
 # keep-alive-interval: 15
 #自定义 geodata url
 geox-url:
-  geoip: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat"
-  geosite: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat"
-  mmdb: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.metadb"
-  asn: "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/GeoLite2-ASN.mmdb"
+  geoip: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat
+  geosite: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat
+  mmdb: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.metadb
+  asn: https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/GeoLite2-ASN.mmdb
 geodata-loader: standard #standard：标准加载器 memconservative：专为内存受限 (小内存) 设备优化的加载器 (默认值)
 geo-auto-update: true # 是否自动更新 geodata
 geo-update-interval: 72 # 更新间隔，单位：小时
@@ -36,11 +36,11 @@ tun:
   enable: false
   stack: system # gvisor/mixed
   dns-hijack:
-  - any:53
+    - any:53
 
 # 嗅探域名 可选配置redir-host模式开启
 sniffer:
-  enable: true
+  enable: false
   force-dns-mapping: true ## 对 redir-host 类型识别的流量进行强制嗅探
   parse-pure-ip: true ## 对所有未获取到域名的流量进行强制嗅探
   override-destination: true ## 是否使用嗅探结果作为实际访问，默认 true
@@ -52,16 +52,16 @@ sniffer:
       # 默认嗅探 80
       # force-domain:
       #   - +.v2ex.com
-      # skip-src-address: # 对于来源ip跳过嗅探
-      #   - 192.168.0.0/16
+  # skip-src-address: # 对于来源ip跳过嗅探
+    #   - 192.168.0.0/16
   skip-dst-address:
-  # 对于目标ip跳过嗅探
-  - 192.168.0.0/16
+    # 对于目标ip跳过嗅探
+    - 192.168.0.0/16
   ## 对嗅探结果进行跳过
   skip-domain:
-  - Mijia Cloud
-  - dlg.io.mi.com
-  - geosite:private
+    - Mijia Cloud
+    - dlg.io.mi.com
+    - geosite:private
 
 #hosts:
 # '*.mihomo.dev': 127.0.0.1
@@ -71,68 +71,22 @@ sniffer:
 # home.lan: lan # lan 为特别字段，将加入本地所有网卡的地址
 # baidu.com: google.com # 只允许配置一个别名
 
-# DNS 配置
-dns:
-  enable: true
-  prefer-h3: false
-  ipv6: false
-  enhanced-mode: fake-ip # fake-ip or redir-host
-  fake-ip-range: 198.18.0.1/16 # fake-ip 池设置
-  # 配置fake-ip-filter的匹配模式，默认为blacklist，即如果匹配成功不返回fake-ip
-  # 可设置为whitelist，即只有匹配成功才返回fake-ip
-  fake-ip-filter-mode: whitelist
-  fake-ip-filter:
-  # fakeip-filter 为 rule-providers 中的名为 fakeip-filter 规则订阅，
-  # 且 behavior 必须为 domain/classical，当为 classical 时仅会生效域名类规则
-  - rule-set:CustomProxy
-  - rule-set:GitHub
-  - rule-set:Copilot
-  - rule-set:Microsoft
-  - rule-set:GoogleFCM
-  - rule-set:Google
-  - geosite:pixiv
-  - geosite:telegram
-  - geosite:category-container
-  - geosite:category-ai-!cn
-  - geosite:category-social-media-!cn
-  - geosite:category-porn
-  - rule-set:GlobalMedia
-  - rule-set:ProxyLite
-  # use-hosts: true # 查询 hosts
-
-  # 配置后面的nameserver、fallback和nameserver-policy向dns服务器的连接过程是否遵守遵守rules规则
-  # 如果为false（默认值）则这三部分的dns服务器在未特别指定的情况下会直连
-  # 如果为true，将会按照rules的规则匹配链接方式（走代理或直连），如果有特别指定则任然以指定值为准
-  # 仅当proxy-server-nameserver非空时可以开启此选项, 强烈不建议和prefer-h3一起使用
-  # 此外，这三者配置中的dns服务器如果出现域名会采用default-nameserver配置项解析，也请确保正确配置default-nameserver
-  respect-rules: false
-
-  # 用于解析 DNS 服务器 的域名
-  default-nameserver:
-  - 127.0.0.1:6053
-  # 默认的域名解析服务器
-  nameserver:
-  - 127.0.0.1:6053
-  # 仅用于解析代理节点的域名
-  proxy-server-nameserver:
-  - 127.0.0.1:6053
-
 # 节点
 proxies:
-- name: US-Reality
-  type: vless
-  server: ""
-  port: 443
-  uuid: ""
-  network: tcp
-  tls: true
-  udp: true
-  flow: xtls-rprx-vision
-  servername: ""
-  reality-opts:
-    public-key: ""
-    short-id: ""
-  client-fingerprint: chrome
+  - name: US-Reality
+    type: vless
+    server:
+    port: 443
+    uuid:
+    network: tcp
+    tls: true
+    udp: true
+    flow: xtls-rprx-vision
+    servername:
+    reality-opts:
+      public-key:
+      short-id:
+    client-fingerprint: chrome
 
 FilterHK: &FilterHK "^(?=.*(香港|HK|Hong|🇭🇰))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
 FilterJP: &FilterJP "^(?=.*(日本|JP|Japan|🇯🇵))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
@@ -161,58 +115,58 @@ SelectProxies: &SelectProxies
 
 # 代理组
 proxy-groups:
-- name: HK-自动选择
-  <<: *AutoProviders
-  filter: *FilterHK
-- name: US-自动选择
-  <<: *AutoProviders
-  filter: *FilterUS
-- name: JP-自动选择
-  <<: *AutoProviders
-  filter: *FilterJP
-- name: SG-自动选择
-  <<: *AutoProviders
-  filter: *FilterSG
-- name: AI
-  <<: *SelectProxies
-  proxies:
-  - DIRECT
-  - HK-自动选择
-  - US-自动选择
-  - JP-自动选择
-  - SG-自动选择
-- name: 测速
-  <<: *SelectProxies
-  proxies:
-  - DIRECT
-  - HK-自动选择
-  - US-自动选择
-  - JP-自动选择
-  - SG-自动选择
-- name: 流媒体
-  <<: *SelectProxies
-  proxies:
-  - DIRECT
-  - HK-自动选择
-  - US-自动选择
-  - JP-自动选择
-  - SG-自动选择
-- name: 游戏平台
-  <<: *SelectProxies
-  proxies:
-  - DIRECT
-  - HK-自动选择
-  - US-自动选择
-  - JP-自动选择
-  - SG-自动选择
-- name: PROXY
-  <<: *SelectProxies
-  proxies:
-  - DIRECT
-  - HK-自动选择
-  - US-自动选择
-  - JP-自动选择
-  - SG-自动选择
+  - name: HK-自动选择
+    <<: *AutoProviders
+    filter: *FilterHK
+  - name: US-自动选择
+    <<: *AutoProviders
+    filter: *FilterUS
+  - name: JP-自动选择
+    <<: *AutoProviders
+    filter: *FilterJP
+  - name: SG-自动选择
+    <<: *AutoProviders
+    filter: *FilterSG
+  - name: AI
+    <<: *SelectProxies
+    proxies:
+      - DIRECT
+      - HK-自动选择
+      - US-自动选择
+      - JP-自动选择
+      - SG-自动选择
+  - name: 测速
+    <<: *SelectProxies
+    proxies:
+      - DIRECT
+      - HK-自动选择
+      - US-自动选择
+      - JP-自动选择
+      - SG-自动选择
+  - name: 流媒体
+    <<: *SelectProxies
+    proxies:
+      - DIRECT
+      - HK-自动选择
+      - US-自动选择
+      - JP-自动选择
+      - SG-自动选择
+  - name: 游戏平台
+    <<: *SelectProxies
+    proxies:
+      - DIRECT
+      - HK-自动选择
+      - US-自动选择
+      - JP-自动选择
+      - SG-自动选择
+  - name: PROXY
+    <<: *SelectProxies
+    proxies:
+      - DIRECT
+      - HK-自动选择
+      - US-自动选择
+      - JP-自动选择
+      - SG-自动选择
 
 # 订阅配置
 NodeParam: &NodeParam
@@ -222,8 +176,8 @@ NodeParam: &NodeParam
   size-limit: 0
   header:
     User-Agent:
-      - "mihomo/1.19.0"
-      - "Clash/v1.18.0"
+      - mihomo/1.19.0
+      - Clash/v1.18.0
   health-check:
     enable: true
     interval: 600
@@ -235,7 +189,7 @@ NodeParam: &NodeParam
 # 订阅
 proxy-providers:
   provider1:
-    url: ""
+    url:
     <<: *NodeParam
 
 # 规则订阅
@@ -274,60 +228,19 @@ rule-providers:
   Speedtest:
     <<: *RuleSet_domain_text
     url: https://ruleset.skk.moe/Clash/domainset/speedtest.txt
-
   ## https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash
-  Download:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Download/Download_No_Resolve.yaml
-  XiaoMi:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/XiaoMi/XiaoMi_No_Resolve.yaml
-  OPPO:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OPPO/OPPO_No_Resolve.yaml
-  OnePlus:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OnePlus/OnePlus_No_Resolve.yaml
-  Vivo:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Vivo/Vivo_No_Resolve.yaml
   Tencent:
     <<: *RuleSet_classical_yaml
     url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Tencent/Tencent_No_Resolve.yaml
   WeChat:
     <<: *RuleSet_classical_yaml
     url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/WeChat/WeChat_No_Resolve.yaml
-  Copilot:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Copilot/Copilot_No_Resolve.yaml
-  Google:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Google/Google_No_Resolve.yaml
-  GoogleFCM:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GoogleFCM/GoogleFCM_No_Resolve.yaml
-  GitHub:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GitHub/GitHub_No_Resolve.yaml
-  Bing:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Bing/Bing_No_Resolve.yaml
-  Microsoft:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Microsoft/Microsoft_No_Resolve.yaml
-  ChinaMedia:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/ChinaMedia/ChinaMedia_No_Resolve.yaml
   GlobalMedia:
     <<: *RuleSet_classical_yaml
     url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GlobalMedia/GlobalMedia_Classical_No_Resolve.yaml
-  ProxyLite:
-    <<: *RuleSet_classical_yaml
-    url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/ProxyLite/ProxyLite_No_Resolve.yaml
   Global:
     <<: *RuleSet_classical_yaml
     url: https://cdn.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Global/Global_Classical_No_Resolve.yaml
-
   ## 自定义规则
   CustomDirect:
     <<: *RuleSet_classical_yaml
@@ -337,52 +250,67 @@ rule-providers:
     url: https://cdn.jsdelivr.net/gh/alienven/clash-rules@main/PROXY/PROXY_No_Resolve.yaml
 
 rules:
-- AND,((NETWORK,UDP),(DST-PORT,443)),REJECT
-- NETWORK,udp,DIRECT
-- GEOSITE,category-httpdns-cn,REJECT
-- RULE-SET,CustomDirect,DIRECT
-- RULE-SET,CustomProxy,PROXY
-- GEOSITE,private,DIRECT
-- GEOIP,private,DIRECT,no-resolve
-- GEOSITE,category-ntp-cn,DIRECT
-- RULE-SET,Download,DIRECT
-- GEOSITE,jsdelivr,DIRECT
-- GEOSITE,tracker,DIRECT
-- RULE-SET,XiaoMi,DIRECT
-- RULE-SET,OPPO,DIRECT
-- RULE-SET,OnePlus,DIRECT
-- RULE-SET,Vivo,DIRECT
-- RULE-SET,WeChat,DIRECT
-- RULE-SET,Tencent,DIRECT
-- GEOSITE,apple@cn,DIRECT
-- GEOSITE,category-social-media-cn,DIRECT
-- GEOSITE,category-ai-cn,DIRECT
-- GEOSITE,category-ai-!cn,AI
-- GEOSITE,category-netdisk-cn,DIRECT
-- RULE-SET,ChinaMedia,DIRECT
-- GEOSITE,category-container,PROXY
-- RULE-SET,GitHub,PROXY
-- RULE-SET,Bing,DIRECT
-- GEOSITE,onedrive,DIRECT
-- GEOSITE,microsoft@cn,DIRECT
-- RULE-SET,Copilot,PROXY
-- RULE-SET,Microsoft,PROXY
-- GEOSITE,pixiv,PROXY
-- GEOSITE,telegram,PROXY
-- GEOIP,telegram,PROXY,no-resolve
-- GEOSITE,category-porn,流媒体
-- RULE-SET,GlobalMedia,流媒体
-- GEOSITE,google@cn,DIRECT
-- RULE-SET,GoogleFCM,PROXY
-- RULE-SET,Google,PROXY
-- GEOIP,google,PROXY,no-resolve
-- GEOSITE,category-social-media-!cn,PROXY
-- RULE-SET,Speedtest,测速
-- GEOSITE,category-game-accelerator-cn,DIRECT
-- GEOSITE,tld-cn,DIRECT
-- GEOSITE,steam@cn,DIRECT
-- GEOSITE,category-games@cn,DIRECT
-- GEOSITE,category-games,游戏平台
-- GEOSITE,cn,DIRECT
-- GEOIP,cn,DIRECT,no-resolve
-- MATCH,PROXY
+  - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT
+  - NETWORK,udp,DIRECT
+  - GEOSITE,category-httpdns-cn@ads,REJECT
+  - RULE-SET,CustomDirect,DIRECT
+  - RULE-SET,CustomProxy,PROXY
+  - GEOSITE,private,DIRECT
+  - GEOIP,private,DIRECT,no-resolve
+  - GEOSITE,category-ntp-cn,DIRECT
+  - GEOSITE,jsdelivr,DIRECT
+  - GEOSITE,tracker,DIRECT
+  - GEOSITE,category-ai-!cn,AI
+  - GEOSITE,category-container,PROXY
+  - GEOSITE,apple@cn,DIRECT
+  - GEOSITE,github,PROXY
+  - GEOSITE,microsoft@cn,DIRECT
+  - GEOSITE,microsoft,PROXY
+  - GEOSITE,pixiv,PROXY
+  - GEOSITE,telegram,PROXY
+  - GEOIP,telegram,PROXY,no-resolve
+  - GEOSITE,category-porn,流媒体
+  - RULE-SET,GlobalMedia,流媒体
+  - GEOSITE,google@cn,DIRECT
+  - GEOSITE,google,PROXY
+  - GEOIP,google,PROXY,no-resolve
+  - RULE-SET,Speedtest,测速
+  - GEOSITE,category-game-accelerator-cn,DIRECT
+  - GEOSITE,tld-cn,DIRECT
+  - GEOSITE,category-games@cn,DIRECT
+  - GEOSITE,category-games,游戏平台
+  - GEOSITE,cn,DIRECT
+  - GEOIP,cn,DIRECT,no-resolve
+  - MATCH,PROXY
+
+# DNS 配置
+dns:
+  enable: true
+  prefer-h3: false
+  ipv6: false
+  enhanced-mode: fake-ip # fake-ip or redir-host
+  fake-ip-range: 198.18.0.1/16 # fake-ip 池设置
+  # 配置fake-ip-filter的匹配模式，默认为blacklist，即如果匹配成功不返回fake-ip
+  # 可设置为whitelist，即只有匹配成功才返回fake-ip
+  fake-ip-filter-mode: whitelist
+  fake-ip-filter:
+    # fakeip-filter 为 rule-providers 中的名为 fakeip-filter 规则订阅，
+    # 且 behavior 必须为 domain/classical，当为 classical 时仅会生效域名类规则
+    - rule-set:CustomProxy
+    - rule-set:Global
+  # use-hosts: true # 查询 hosts
+  # 配置后面的nameserver、fallback和nameserver-policy向dns服务器的连接过程是否遵守遵守rules规则
+  # 如果为false（默认值）则这三部分的dns服务器在未特别指定的情况下会直连
+  # 如果为true，将会按照rules的规则匹配链接方式（走代理或直连），如果有特别指定则任然以指定值为准
+  # 仅当proxy-server-nameserver非空时可以开启此选项, 强烈不建议和prefer-h3一起使用
+  # 此外，这三者配置中的dns服务器如果出现域名会采用default-nameserver配置项解析，也请确保正确配置default-nameserver
+  respect-rules: false
+  # 用于解析 DNS 服务器 的域名
+  default-nameserver:
+    - 127.0.0.1:6053
+  # 默认的域名解析服务器
+  nameserver:
+    - 127.0.0.1:6053
+  # 仅用于解析代理节点的域名
+  proxy-server-nameserver:
+    - 127.0.0.1:6053
