@@ -1,14 +1,6 @@
 payload:
-  # DNS
-  - DOMAIN,one.one.one.one
-  - DOMAIN-SUFFIX,cloudflare-dns.com
-  - DOMAIN-SUFFIX,dns.google
   # google
-  - DOMAIN-SUFFIX,gstatic.com
   - DOMAIN-SUFFIX,services.googleapis.cn
-  - DOMAIN-SUFFIX,clientservices.googleapis.com
-  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com
   - DOMAIN-SUFFIX,googleapis.cn
-  # 自定义
-  - DOMAIN-SUFFIX,nodeseek.com
-  - DOMAIN-SUFFIX,v2ex.com
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com
+  - DOMAIN-SUFFIX,clientservices.googleapis.com
