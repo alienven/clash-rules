@@ -3,7 +3,7 @@ mixed-port: 7890 # HTTP(S) 和 SOCKS 代理混合端口
 # tproxy-port: 7893
 log-level: warning # 日志等级 silent/error/warning/info/debug
 allow-lan: true # 允许局域网连接
-bind-address: "*" # 绑定 IP 地址，仅作用于 allow-lan 为 true，'*'表示所有地址
+bind-address: '*' # 绑定 IP 地址，仅作用于 allow-lan 为 true，'*'表示所有地址
 mode: rule
 ipv6: false
 unified-delay: false # 开启统一延迟时，会计算 RTT，以消除连接握手等带来的不同类型节点的延迟差异
@@ -53,7 +53,7 @@ sniffer:
       # force-domain:
       #   - +.v2ex.com
   # skip-src-address: # 对于来源ip跳过嗅探
-    #   - 192.168.0.0/16
+  #   - 192.168.0.0/16
   skip-dst-address:
     # 对于目标ip跳过嗅探
     - 192.168.0.0/16
@@ -88,15 +88,15 @@ proxies:
       short-id:
     client-fingerprint: chrome
 
-FilterHK: &FilterHK "^(?=.*(香港|HK|Hong|🇭🇰))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterJP: &FilterJP "^(?=.*(日本|JP|Japan|🇯🇵))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterKR: &FilterKR "^(?=.*(韩国|韓|KR|Korea|🇰🇷))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterSG: &FilterSG "^(?=.*(新加坡|狮城|SG|Singapore|🇸🇬))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterUS: &FilterUS "^(?=.*(美国|US|United States|America|🇺🇸))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterUK: &FilterUK "^(?=.*(英国|UK|United Kingdom|🇬🇧))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterFR: &FilterFR "^(?=.*(法国|FR|France|🇫🇷))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterDE: &FilterDE "^(?=.*(德国|DE|Germany|🇩🇪))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterTW: &FilterTW "^(?=.*(台湾|TW|Taiwan|Wan|🇹🇼))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
+FilterHK: &FilterHK '^(?=.*(香港|HK|Hong|🇭🇰))(?!(.*(Reality|机场|每月|剩余|订阅))).*$'
+FilterJP: &FilterJP '^(?=.*(日本|JP|Japan|🇯🇵))(?!(.*(Reality|机场|每月|剩余|订阅))).*$'
+FilterKR: &FilterKR '^(?=.*(韩国|韓|KR|Korea|🇰🇷))(?!(.*(Reality|机场|每月|剩余|订阅))).*$'
+FilterSG: &FilterSG '^(?=.*(新加坡|狮城|SG|Singapore|🇸🇬))(?!(.*(Reality|机场|每月|剩余|订阅))).*$'
+FilterUS: &FilterUS '^(?=.*(美国|US|United States|America|🇺🇸))(?!(.*(Reality|机场|每月|剩余|订阅))).*$'
+FilterUK: &FilterUK '^(?=.*(英国|UK|United Kingdom|🇬🇧))(?!(.*(Reality|机场|每月|剩余|订阅))).*$'
+FilterFR: &FilterFR '^(?=.*(法国|FR|France|🇫🇷))(?!(.*(Reality|机场|每月|剩余|订阅))).*$'
+FilterDE: &FilterDE '^(?=.*(德国|DE|Germany|🇩🇪))(?!(.*(Reality|机场|每月|剩余|订阅))).*$'
+FilterTW: &FilterTW '^(?=.*(台湾|TW|Taiwan|Wan|🇹🇼))(?!(.*(Reality|机场|每月|剩余|订阅))).*$'
 FilterAll: &FilterAll '^(?=.*(.))(?!(.*((?i)机场|每月|剩余|订阅|(\b(TOTAL|EXPIRE|EMAIL|Panel|Channel|Author)\b|(\d{4}-\d{2}-\d{2}|\d+G))))).*$'
 
 AutoProviders: &AutoProviders
@@ -135,6 +135,14 @@ proxy-groups:
       - 🇸🇬自动选择
       - 🇺🇸自动选择
   - name: 📈测速
+    <<: *SelectProxies
+    proxies:
+      - DIRECT
+      - 🇭🇰自动选择
+      - 🇯🇵自动选择
+      - 🇸🇬自动选择
+      - 🇺🇸自动选择
+  - name: 🎮游戏
     <<: *SelectProxies
     proxies:
       - DIRECT
@@ -264,7 +272,7 @@ rules:
   - GEOSITE,category-game-accelerator-cn,DIRECT
   - GEOSITE,tld-cn,DIRECT
   - GEOSITE,category-games@cn,DIRECT
-  - GEOSITE,category-games,游戏平台
+  - GEOSITE,category-games,🎮游戏
   - GEOSITE,cn,DIRECT
   - GEOIP,cn,DIRECT,no-resolve
   - MATCH,🎯代理
