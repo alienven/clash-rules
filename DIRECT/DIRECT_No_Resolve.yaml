@@ -8,3 +8,4 @@ payload:
   - DOMAIN-SUFFIX,sztbkj.com
   # easytier
   - DOMAIN-KEYWORD,easytier
+  - DOMAIN-KEYWORD,stun
