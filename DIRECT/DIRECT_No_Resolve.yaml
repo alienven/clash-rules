@@ -9,3 +9,5 @@ payload:
   # easytier
   - DOMAIN-KEYWORD,easytier
   - DOMAIN-KEYWORD,stun
+  # pt
+  - DOMAIN-SUFFIX,ptzone.xyz
