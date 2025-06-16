@@ -242,6 +242,7 @@ rules:
   - GEOSITE,tracker,DIRECT
   - GEOSITE,category-ai-!cn,🤖AI
   - GEOSITE,category-container,🎯代理
+  - GEOSITE,category-dev,🎯代理
   - GEOSITE,cloudflare,🎯代理
   - GEOIP,cloudflare,🎯代理,no-resolve
   - RULE-SET,Speedtest,📈测速
@@ -283,12 +284,15 @@ dns:
   # 可设置为whitelist，即只有匹配成功才返回fake-ip
   fake-ip-filter-mode: blacklist
   fake-ip-filter:
+    - "*"
     - "*.lan"
+    - "+.local"
     - "time.*.com"
     - "ntp.*.com"
-    - geosite:private
     - rule-set:CustomDirect
+    - geosite:private
     - geosite:category-ntp
+    - geosite:tracker
     - geosite:tld-cn
     - geosite:cn
     # fakeip-filter 为 rule-providers 中的名为 fakeip-filter 规则订阅，
