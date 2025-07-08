@@ -232,6 +232,7 @@ rule-providers:
 rules:
   - GEOSITE,private,DIRECT
   - GEOIP,private,DIRECT,no-resolve
+  - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT
   - GEOSITE,category-httpdns-cn@ads,REJECT
   - RULE-SET,CustomDirect,DIRECT
   - RULE-SET,CustomProxy,🎯代理

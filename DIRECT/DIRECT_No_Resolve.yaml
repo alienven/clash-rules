@@ -3,7 +3,7 @@ payload:
   - DOMAIN-SUFFIX,alienven.eu.org
   # 飞牛
   - DOMAIN-SUFFIX,fnnas.com
-  - DOMAIN-SUFFIX,5ddd.com
+  - DOMAIN-SUFFIX,fnos.net
   # 天钡
   - DOMAIN-SUFFIX,sztbkj.com
   # easytier
@@ -11,3 +11,4 @@ payload:
   - DOMAIN-KEYWORD,stun
   # pt
   - DOMAIN-SUFFIX,ptzone.xyz
+  - DOMAIN-SUFFIX,ptfans.cc
