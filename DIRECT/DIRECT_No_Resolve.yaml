@@ -12,3 +12,5 @@ payload:
   # pt
   - DOMAIN-SUFFIX,ptzone.xyz
   - DOMAIN-SUFFIX,ptfans.cc
+  # kspeeder
+  - DOMAIN,registry.linkease.net
