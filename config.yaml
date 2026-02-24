@@ -1,6 +1,6 @@
 mixed-port: 7890 # HTTP(S) 和 SOCKS 代理混合端口
 allow-lan: true # 允许局域网连接
-bind-address: "*" # 绑定 IP 地址，仅作用于 allow-lan 为 true，"*"表示所有地址
+bind-address: '*' # 绑定 IP 地址，仅作用于 allow-lan 为 true，"*"表示所有地址
 mode: rule
 ipv6: true
 log-level: warning # 日志等级 silent/error/warning/info/debug
@@ -57,8 +57,8 @@ sniffer:
     - 192.168.0.0/16
   ## 对嗅探结果进行跳过
   skip-domain:
-    - "Mijia Cloud"
-    - "dlg.io.mi.com"
+    - 'Mijia Cloud'
+    - 'dlg.io.mi.com'
 
 # 节点
 proxies:
@@ -77,16 +77,16 @@ proxies:
       short-id:
     client-fingerprint: chrome
 
-FilterHK: &FilterHK "^(?=.*(香港|HK|Hong|🇭🇰))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterJP: &FilterJP "^(?=.*(日本|JP|Japan|🇯🇵))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterKR: &FilterKR "^(?=.*(韩国|韓|KR|Korea|🇰🇷))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterSG: &FilterSG "^(?=.*(新加坡|狮城|SG|Singapore|🇸🇬))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterUS: &FilterUS "^(?=.*(美国|US|United States|America|🇺🇸))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterUK: &FilterUK "^(?=.*(英国|UK|United Kingdom|🇬🇧))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterFR: &FilterFR "^(?=.*(法国|FR|France|🇫🇷))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterDE: &FilterDE "^(?=.*(德国|DE|Germany|🇩🇪))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterTW: &FilterTW "^(?=.*(台湾|TW|Taiwan|Wan|🇹🇼))(?!(.*(Reality|机场|每月|剩余|订阅))).*$"
-FilterAll: &FilterAll "^(?=.*(.))(?!(.*((?i)机场|每月|剩余|订阅|(\b(TOTAL|EXPIRE|EMAIL|Panel|Channel|Author)\b|(\d{4}-\d{2}-\d{2}|\d+G))))).*$"
+FilterHK: &FHK ^(?=.*(香港|HK|Hong Kong|🇭🇰))(?!(.*(Reality|机场|每月|剩余|订阅))).*$
+FilterJP: &FJP ^(?=.*(日本|JP|Japan|🇯🇵))(?!(.*(Reality|机场|每月|剩余|订阅))).*$
+FilterKR: &FKR ^(?=.*(韩国|韓|KR|Korea|🇰🇷))(?!(.*(Reality|机场|每月|剩余|订阅))).*$
+FilterSG: &FSG ^(?=.*(新加坡|狮城|SG|Singapore|🇸🇬))(?!(.*(Reality|机场|每月|剩余|订阅))).*$
+FilterUS: &FUS ^(?=.*(美国|US|United States|America|🇺🇸))(?!(.*(Reality|机场|每月|剩余|订阅))).*$
+FilterUK: &FUK ^(?=.*(英国|UK|United Kingdom|🇬🇧))(?!(.*(Reality|机场|每月|剩余|订阅))).*$
+FilterFR: &FFR ^(?=.*(法国|FR|France|🇫🇷))(?!(.*(Reality|机场|每月|剩余|订阅))).*$
+FilterDE: &FDE ^(?=.*(德国|DE|Germany|🇩🇪))(?!(.*(Reality|机场|每月|剩余|订阅))).*$
+FilterTW: &FTW ^(?=.*(台湾|TW|Taiwan|Wan|🇹🇼))(?!(.*(Reality|机场|每月|剩余|订阅))).*$
+FilterAll: &FAll ^(?=.*(.))(?!(.*((?i)机场|每月|剩余|订阅|(\b(TOTAL|EXPIRE|EMAIL|Panel|Channel|Author)\b|(\d{4}-\d{2}-\d{2}|\d+G))))).*$
 
 AutoProviders: &AutoProviders
   type: url-test
@@ -100,22 +100,20 @@ SelectProviders: &SelectProviders
 SelectProxies: &SelectProxies
   type: select
   include-all-proxies: true
-
-# 代理组
 proxy-groups:
   - name: 🇭🇰自动选择
     <<: *AutoProviders
-    filter: *FilterHK
+    filter: *FHK
   - name: 🇺🇸自动选择
     <<: *AutoProviders
-    filter: *FilterUS
+    filter: *FUS
   - name: 🇯🇵自动选择
     <<: *AutoProviders
-    filter: *FilterJP
+    filter: *FJP
   - name: 🇸🇬自动选择
     <<: *AutoProviders
-    filter: *FilterSG
-  - name: 🤖AI
+    filter: *FSG
+  - name: AI
     <<: *SelectProxies
     proxies:
       - DIRECT
@@ -123,7 +121,7 @@ proxy-groups:
       - 🇯🇵自动选择
       - 🇸🇬自动选择
       - 🇺🇸自动选择
-  - name: 📈测速
+  - name: 测速
     <<: *SelectProxies
     proxies:
       - DIRECT
@@ -131,7 +129,7 @@ proxy-groups:
       - 🇯🇵自动选择
       - 🇸🇬自动选择
       - 🇺🇸自动选择
-  - name: 🎮游戏
+  - name: 游戏
     <<: *SelectProxies
     proxies:
       - DIRECT
@@ -139,7 +137,7 @@ proxy-groups:
       - 🇯🇵自动选择
       - 🇸🇬自动选择
       - 🇺🇸自动选择
-  - name: 🎬流媒体
+  - name: 流媒体
     <<: *SelectProxies
     proxies:
       - DIRECT
@@ -147,7 +145,7 @@ proxy-groups:
       - 🇯🇵自动选择
       - 🇸🇬自动选择
       - 🇺🇸自动选择
-  - name: 🎯代理
+  - name: GitHub
     <<: *SelectProxies
     proxies:
       - DIRECT
@@ -155,56 +153,41 @@ proxy-groups:
       - 🇯🇵自动选择
       - 🇸🇬自动选择
       - 🇺🇸自动选择
-
-# 订阅配置
-NodeParam: &NodeParam
-  type: http
-  interval: 86400
-  proxy: DIRECT
-  header:
-    User-Agent:
-      - "mihomo/1.19.0"
-      - "Clash/v1.18.0"
-  health-check:
-    enable: true
-    lazy: true
-    url: https://www.gstatic.com/generate_204
-  override:
-    skip-cert-verify: true
-    udp: true
-# 订阅
-proxy-providers:
-  provider1:
-    url:
-    <<: *NodeParam
-
+  - name: 代理
+    <<: *SelectProxies
+    proxies:
+      - DIRECT
+      - 🇭🇰自动选择
+      - 🇯🇵自动选择
+      - 🇸🇬自动选择
+      - 🇺🇸自动选择
 # 规则订阅
-RuleSet_classical_text: &RuleSet_classical_text
+RuleSet_classical_text: &RCText
   behavior: classical
   format: text
   type: http
   interval: 86400
-RuleSet_domain_text: &RuleSet_domain_text
+RuleSet_domain_text: &RDText
   behavior: domain
   format: text
   type: http
   interval: 86400
-RuleSet_ipcidr_text: &RuleSet_ipcidr_text
+RuleSet_ipcidr_text: &RIText
   behavior: ipcidr
   format: text
   type: http
   interval: 86400
-RuleSet_classical_yaml: &RuleSet_classical_yaml
+RuleSet_classical_yaml: &RCYaml
   behavior: classical
   format: yaml
   type: http
   interval: 86400
-RuleSet_domain_yaml: &RuleSet_domain_yaml
+RuleSet_domain_yaml: &RDYaml
   behavior: domain
   format: yaml
   type: http
   interval: 86400
-RuleSet_ipcidr_yaml: &RuleSet_ipcidr_yaml
+RuleSet_ipcidr_yaml: &RIYaml
   behavior: ipcidr
   format: yaml
   type: http
@@ -212,26 +195,25 @@ RuleSet_ipcidr_yaml: &RuleSet_ipcidr_yaml
 rule-providers:
   ## https://github.com/SukkaW/Surge/
   Speedtest:
-    <<: *RuleSet_domain_text
+    <<: *RDText
     url: https://ruleset.skk.moe/Clash/domainset/speedtest.txt
   ## https://github.com/blackmatrix7/ios_rule_script/tree/master/rule/Clash
   GlobalMedia:
-    <<: *RuleSet_classical_yaml
+    <<: *RCYaml
     url: https://cdn.jsdmirror.com/gh/blackmatrix7/ios_rule_script@master/rule/Clash/GlobalMedia/GlobalMedia_Classical_No_Resolve.yaml
   Global:
-    <<: *RuleSet_classical_yaml
+    <<: *RCYaml
     url: https://cdn.jsdmirror.com/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Global/Global_Classical_No_Resolve.yaml
   ## 自定义规则
   CustomDirect:
-    <<: *RuleSet_classical_yaml
+    <<: *RCYaml
     url: https://cdn.jsdmirror.com/gh/alienven/clash-rules@main/DIRECT/DIRECT_No_Resolve.yaml
   CustomProxy:
-    <<: *RuleSet_classical_yaml
+    <<: *RCYaml
     url: https://cdn.jsdmirror.com/gh/alienven/clash-rules@main/PROXY/PROXY_No_Resolve.yaml
 
 rules:
   - GEOSITE,private,DIRECT
-
   - GEOIP,private,DIRECT,no-resolve
   - AND,((NETWORK,UDP),(DST-PORT,443)),REJECT
   - GEOSITE,category-httpdns-cn@ads,REJECT
@@ -286,11 +268,11 @@ dns:
   # 可设置为whitelist，即只有匹配成功才返回fake-ip
   fake-ip-filter-mode: blacklist
   fake-ip-filter:
-    - "*"
-    - "*.lan"
-    - "+.local"
-    - "time.*.com"
-    - "ntp.*.com"
+    - '*'
+    - '*.lan'
+    - '+.local'
+    - 'time.*.com'
+    - 'ntp.*.com'
     - rule-set:CustomDirect
     - geosite:private
     - geosite:category-ntp
