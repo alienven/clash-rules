@@ -14,5 +14,6 @@ payload:
   - DOMAIN-SUFFIX,ptfans.cc
   # kspeeder
   - DOMAIN-SUFFIX,linkease.net
+  - DOMAIN,docker.1panel.live
   # 机场
   - DOMAIN-SUFFIX,the-best-airport.com
