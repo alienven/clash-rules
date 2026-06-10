@@ -1,0 +1,40 @@
+name: Sync External Assets
+
+on:
+  schedule:
+    - cron: '0 12 * * 1'
+  workflow_dispatch:
+
+env:
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+jobs:
+  update-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download Files
+        run: |
+          mkdir -p publish
+          curl -L -o ./publish/dist-misans-only.zip https://github.com/Zephyruso/zashboard/releases/latest/download/dist-misans-only.zip
+
+          curl -L -o ./publish/mihomo-smart.gz https://github.com/vernesong/mihomo/releases/download/Prerelease-Alpha/mihomo-linux-arm64-alpha-smart-18aca54.gz
+          curl -L -o ./publish/Model.bin https://github.com/vernesong/mihomo/releases/download/LightGBM-Model/Model-large.bin
+
+          resp=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/MetaCubeX/mihomo/releases/latest)
+          asset_url=$(echo "$resp" | jq -r '.assets[] | select(.name | test("mihomo-linux-arm64.*\\.gz$")) | .browser_download_url' | head -n1)
+          curl -L -o ./publish/mihomo-latest-linux-arm64.gz $asset_url
+
+      - name: Git push to release branch
+        run: |
+          cd publish || exit 1
+          BUILDTIME=$(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M')
+          git init
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "58761202+github-actions[bot]@users.noreply.github.com"
+          git checkout -b release
+          git add .
+          git commit -m "Released on $BUILDTIME"
+          git remote add origin "https://${{ github.actor }}:$GITHUB_TOKEN@github.com/${{ github.repository }}"
+          git push -f -u origin release
