@@ -20,7 +20,11 @@ jobs:
           ref: release
           fetch-depth: 0
 
-      - name: Download Mihomo Smart Core
+      - name: Clear release branch
+        run: |
+          find . -mindepth 1 -maxdepth 1 ! -name ".git" -exec rm -rf {} +
+
+      - name: Download mihomo smart core
         run: |
           API="https://api.github.com/repos/vernesong/mihomo/releases"
           ASSET_PREFIX="mihomo-linux-arm64-alpha-smart"
@@ -48,7 +52,7 @@ jobs:
           echo "下载链接：$alpha_url"
           curl -sfL -o mihomo-smart.gz "$alpha_url"
 
-      - name: Download Mihomo Latest Core
+      - name: Download mihomo latest core
         run: |
           API="https://api.github.com/repos/MetaCubeX/mihomo/releases/latest"
           ASSET_PREFIX="mihomo-linux-arm64.*\\.gz$"
@@ -74,11 +78,11 @@ jobs:
           echo "下载链接：$latest_url"
           curl -sfL -o mihomo-latest.gz $latest_url
 
-      - name: Download Mihomo Latest Core
+      - name: Download Zashboard
         run: |
           curl -sfL -o dist-misans-only.zip https://github.com/Zephyruso/zashboard/releases/latest/download/dist-misans-only.zip
 
-      - name: Download Mihomo Model
+      - name: Download mihomo model
         run: |
           curl -sfL -o Model.bin https://github.com/vernesong/mihomo/releases/download/LightGBM-Model/Model-large.bin
 
@@ -88,8 +92,6 @@ jobs:
 
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-
-          find . -mindepth 1 -maxdepth 1 ! -name ".git" -exec rm -rf {} +
 
           git add -A
           git diff --cached --quiet && echo "No changes" && exit 0
