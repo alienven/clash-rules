@@ -14,27 +14,84 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Download Files
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+        with:
+          ref: release
+          fetch-depth: 0
+
+      - name: Download Mihomo Smart Core
         run: |
-          mkdir -p publish
-          curl -L -o ./publish/dist-misans-only.zip https://github.com/Zephyruso/zashboard/releases/latest/download/dist-misans-only.zip
+          API="https://api.github.com/repos/vernesong/mihomo/releases"
+          ASSET_PREFIX="mihomo-linux-arm64-alpha-smart"
 
-          curl -L -o ./publish/mihomo-smart.gz https://github.com/vernesong/mihomo/releases/download/Prerelease-Alpha/mihomo-linux-arm64-alpha-smart-18aca54.gz
-          curl -L -o ./publish/Model.bin https://github.com/vernesong/mihomo/releases/download/LightGBM-Model/Model-large.bin
+          alpha_url=$(
+            curl -sfL \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              "$API" \
+            | jq -r --arg prefix "$ASSET_PREFIX" '
+                .[]
+                | select(.prerelease == true)
+                | .assets[]
+                | select(.name | startswith($prefix))
+                | .browser_download_url
+              ' \
+            | head -n 1
+          )
 
-          resp=$(curl -s -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/MetaCubeX/mihomo/releases/latest)
-          asset_url=$(echo "$resp" | jq -r '.assets[] | select(.name | test("mihomo-linux-arm64.*\\.gz$")) | .browser_download_url' | head -n1)
-          curl -L -o ./publish/mihomo-latest-linux-arm64.gz $asset_url
+          if [[ -z "$alpha_url" ]]; then
+            echo "❌ 未找到 mihomo-linux-arm64-alpha-smart" >&2
+            exit 1
+          fi
 
-      - name: Git push to release branch
+          echo "下载链接：$alpha_url"
+          curl -sfL -o mihomo-smart.gz "$alpha_url"
+
+      - name: Download Mihomo Latest Core
         run: |
-          cd publish || exit 1
+          API="https://api.github.com/repos/MetaCubeX/mihomo/releases/latest"
+          ASSET_PREFIX="mihomo-linux-arm64.*\\.gz$"
+
+          latest_url=$(
+            curl -sfL \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              "$API" \
+            | jq -r --arg pat "$ASSET_PREFIX" '
+                .assets[]
+                | select(.name | test($pat))
+                | .browser_download_url
+              ' \
+            | head -n 1
+          )
+
+          if [[ -z "$latest_url" ]]; then
+            echo "❌ 未找到 mihomo-linux-arm64" >&2
+            exit 1
+          fi
+
+          echo "下载链接：$latest_url"
+          curl -sfL -o mihomo-latest.gz $latest_url
+
+      - name: Download Mihomo Latest Core
+        run: |
+          curl -sfL -o dist-misans-only.zip https://github.com/Zephyruso/zashboard/releases/latest/download/dist-misans-only.zip
+
+      - name: Download Mihomo Model
+        run: |
+          curl -sfL -o Model.bin https://github.com/vernesong/mihomo/releases/download/LightGBM-Model/Model-large.bin
+
+      - name: Commit & Push to release branch
+        run: |
           BUILDTIME=$(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M')
-          git init
+
           git config --local user.name "github-actions[bot]"
-          git config --local user.email "58761202+github-actions[bot]@users.noreply.github.com"
-          git checkout -b release
-          git add .
-          git commit -m "Released on $BUILDTIME"
-          git remote add origin "https://${{ github.actor }}:$GITHUB_TOKEN@github.com/${{ github.repository }}"
-          git push -f -u origin release
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+
+          find . -mindepth 1 -maxdepth 1 ! -name ".git" -exec rm -rf {} +
+
+          git add -A
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Update on $BUILDTIME"
+          git push origin release
