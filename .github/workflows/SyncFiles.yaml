@@ -27,18 +27,18 @@ jobs:
       - name: Download mihomo smart core
         run: |
           API="https://api.github.com/repos/vernesong/mihomo/releases"
-          ASSET_PREFIX="mihomo-linux-arm64-alpha-smart"
+          ASSET_REGEX="^mihomo-linux-arm64-alpha-smart-.*\\.gz$"
 
           alpha_url=$(
             curl -sfL \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
               "$API" \
-            | jq -r --arg prefix "$ASSET_PREFIX" '
+            | jq -r --arg regex "$ASSET_REGEX" '
                 .[]
                 | select(.prerelease == true)
                 | .assets[]
-                | select(.name | startswith($prefix))
+                | select(.name | test($regex))
                 | .browser_download_url
               ' \
             | head -n 1
@@ -55,16 +55,16 @@ jobs:
       - name: Download mihomo latest core
         run: |
           API="https://api.github.com/repos/MetaCubeX/mihomo/releases/latest"
-          ASSET_PREFIX="mihomo-linux-arm64.*\\.gz$"
+          ASSET_REGEX="^mihomo-linux-arm64-.*\\.gz$"
 
           latest_url=$(
             curl -sfL \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
               "$API" \
-            | jq -r --arg pat "$ASSET_PREFIX" '
+            | jq -r --arg regex "$ASSET_REGEX" '
                 .assets[]
-                | select(.name | test($pat))
+                | select(.name | test($regex))
                 | .browser_download_url
               ' \
             | head -n 1
