@@ -82,10 +82,6 @@ jobs:
         run: |
           curl -sfL -o dist-misans-only.zip https://github.com/Zephyruso/zashboard/releases/latest/download/dist-misans-only.zip
 
-      - name: Download mihomo model
-        run: |
-          curl -sfL -o Model.bin https://github.com/vernesong/mihomo/releases/download/LightGBM-Model/Model-large.bin
-
       - name: Commit & Push to release branch
         run: |
           BUILDTIME=$(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M')

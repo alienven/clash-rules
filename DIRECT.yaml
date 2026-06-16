@@ -1,0 +1,9 @@
+payload:
+  - DOMAIN-SUFFIX,ssln.eu.org
+  - DOMAIN-SUFFIX,alienven.eu.org
+  # kspeeder
+  - DOMAIN-SUFFIX,linkease.net
+  - DOMAIN,docker.1panel.live
+  - DOMAIN,docker.1ms.run
+  # 机场
+  - DOMAIN-SUFFIX,the-best-airport.com
