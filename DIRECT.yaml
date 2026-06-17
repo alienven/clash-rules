@@ -1,6 +1,9 @@
 payload:
   - DOMAIN-SUFFIX,ssln.eu.org
   - DOMAIN-SUFFIX,alienven.eu.org
+  # 飞牛
+  - DOMAIN-SUFFIX,fnnas.com
+  - DOMAIN-SUFFIX,fnos.net
   # kspeeder
   - DOMAIN-SUFFIX,linkease.net
   - DOMAIN,docker.1panel.live
