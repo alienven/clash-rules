@@ -10,3 +10,10 @@ payload:
   - DOMAIN,docker.1ms.run
   # 机场
   - DOMAIN-SUFFIX,the-best-airport.com
+  # 局域网路由器
+  - DOMAIN,jdcloudwifi.com
+  # github反代
+  - DOMAIN-SUFFIX,gh-proxy.com
+  - DOMAIN-SUFFIX,gh-proxy.org
+  # LLM
+  - DOMAIN-SUFFIX,siliconflow.com
