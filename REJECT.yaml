@@ -1,2 +1,3 @@
 payload:
   - AND,((DST-PORT,80),(DOMAIN-SUFFIX,api.mijia.tech))
+  - AND,((DST-PORT,80),(DOMAIN,baidu.com))
