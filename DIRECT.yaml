@@ -21,3 +21,7 @@ payload:
   - DOMAIN-SUFFIX,pc528.net
   # tunnel
   - DOMAIN-SUFFIX,argotunnel.com
+  # atk/vxe
+  - DOMAIN-SUFFIX,atkgear.com
+  - DOMAIN-SUFFIX,atk.store
+  - DOMAIN-SUFFIX,vxe.com
