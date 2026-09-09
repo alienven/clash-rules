@@ -24,4 +24,5 @@ payload:
   # atk/vxe
   - DOMAIN-SUFFIX,atkgear.com
   - DOMAIN-SUFFIX,atk.store
+  - DOMAIN-SUFFIX,atk.pro
   - DOMAIN-SUFFIX,vxe.com
