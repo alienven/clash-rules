@@ -17,8 +17,6 @@ payload:
   - DOMAIN-SUFFIX,gh-proxy.org
   # LLM
   - DOMAIN-SUFFIX,siliconflow.com
-  # blog
-  - DOMAIN-SUFFIX,pc528.net
   # tunnel
   - DOMAIN-SUFFIX,argotunnel.com
   # atk/vxe
@@ -26,3 +24,5 @@ payload:
   - DOMAIN-SUFFIX,atk.store
   - DOMAIN-SUFFIX,atk.pro
   - DOMAIN-SUFFIX,vxe.com
+  # 尼特利
+  - DOMAIN-SUFFIX,netlea.com
